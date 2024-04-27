@@ -1,6 +1,7 @@
 import React from "react";
 import { Navbar, Nav, Button } from "react-bootstrap";
 import "./NavigationBar.css";
+import { Link } from 'react-router-dom';
 
 const NavigationBar = () => {
   const navbarStyles = {
@@ -29,7 +30,8 @@ const NavigationBar = () => {
         </Nav>
         <Nav style={btnStyles}>
           <Button variant="outline-secondary">Dashboard</Button>
-          <Button variant="primary">Find your mentor</Button>
+          <Link to="/mentor-registration" className="btn btn-primary">Find your mentor</Link>
+         
         </Nav>
       </Navbar>
 
@@ -46,6 +48,7 @@ const NavigationBar = () => {
         <Nav.Link href="#home">ProPilot</Nav.Link>
         <Nav.Link href="#home">Stories</Nav.Link>
         <Nav.Link href="#home">Dashboard</Nav.Link>
+
       </Navbar>
     </div>
   );

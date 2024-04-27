@@ -1,88 +1,66 @@
-import React from "react";
-import "./MentorLogin.css";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { Navigate } from 'react-router-dom'; // Import Navigate
+
+import "./MentorRegistration.css";
+
 const MentorLogin = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('Authorization'); // Retrieve token from localStorage
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}` // Set token in the Authorization header
+        }
+      };
+      const response = await axios.post('http://localhost:8000/mentorLogin', formData, config);
+      localStorage.setItem('Authorization', response.data.mentorToken); // Store new token in localStorage
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error('Login failed:', error.response.data.message);
+    }
+  };
+
   return (
-    <>
-      <main className="main">
-        <div className="background">
-          {/* <img src="https://mentor.preplaced.in/static/media/AbstractLines.240653cd4ac96bda988700665b81fc3a.svg" alt="abstract-lines" /> */}
-          <div className="logo-container">
-            <img src=" " alt="" className="logo" />
-          </div>
-          <div className="content-container">
-            <div className="content">
-              <div className="emoji-container">
-                <img
-                  src="https://mentor.preplaced.in/static/media/Stars.6a4a45cb419614ca71eda3a119a28584.svg"
-                  alt="onboarding-emoji"
-                  className="emoji"
-                />
-              </div>
-              <div className="text">
-                <p className="p-text">
-                  This is where your glorious mentoring journey begins
-                </p>
-              </div>
-              <div className="mentor-container">
-                <div>
-                  <img
-                    src="https://firebasestorage.googleapis.com/v0/b/preplaced-upload-prod/o/image%2Fmentor-profile%2FManish%20Pushkar0.9941042546741938?alt=media&amp;token=d354c187-8be7-4314-9218-4646fd96839e"
-                    alt="mentor"
-                    className="mentor"
-                  />
-                  <img
-                    src="https://firebasestorage.googleapis.com/v0/b/preplaced-upload-prod/o/image%2Fmentor-profile%2FIMG_4203.jpeg?alt=media&amp;token=053d4ec6-40de-4612-bd8c-28c68d6204ed"
-                    alt="mentor"
-                    className="mentor-left"
-                  />
-                  <img
-                    src="https://firebasestorage.googleapis.com/v0/b/preplaced-upload-prod/o/image%2Fmentor-profile%2Fphoto_white_background.png?alt=media&amp;token=39d8958c-2d1e-493a-ad49-fdee80a8f539"
-                    alt="mentor"
-                    className="mentor-left"
-                  />
-                  <img
-                    src="https://firebasestorage.googleapis.com/v0/b/preplaced-upload-prod/o/image%2Fmentor-profile%2FDrishti.jpeg?alt=media&amp;token=16b017f8-140d-494c-a539-98ec8a73254c"
-                    alt="mentor"
-                    className="mentor-left"
-                  />
-                  <img
-                    src="https://firebasestorage.googleapis.com/v0/b/preplaced-upload-prod/o/image%2Fmentor-profile%2Fphoto%20fb.jpg?alt=media&amp;token=68e49c0f-c058-4d9b-b4b4-ac223ef8f3fc"
-                    alt="mentor"
-                    className="mentor-left"
-                  />
-                </div>
-                <p>Join 200+ Mentors</p>
-              </div>
-            </div>
-          </div>
-        </div>
+    <main className="main">
+      {isAuthenticated ? (
+        <Navigate to="/mentor-data" />
+      ) : (
         <div className="form-container">
-          <img
-            src="https://mentor.preplaced.in/static/media/preplaced-logo-black-large.b3c00ca7fb8c1a90e57902ea572cbe11.svg"
-            alt="preplaced"
-          />
-          <div className="form">
-            <h2 className="text-2">Sign up/Sign in</h2>
-            <div className="button-container">
-              <button className="btn-1">
-                <img
-                  src="https://mentor.preplaced.in/static/media/google-logo.da1e4544f1cb0cab13d9a0397f929149.svg"
-                  alt="apple"
-                />
-                Continue with Google
-              </button>
-              <button className="btn-2">
-                <img
-                  src="https://mentor.preplaced.in/static/media/mail-logo.b9ce3d6854ff905cb85207a2f0bc990e.svg"
-                  alt="google"
-                />
-                Continue with Email
-              </button>
+          <img src="https://mentor.preplaced.in/static/media/PreplacedLogoWithoutName.0b8985e680b967ff5fd9ed566af08ab0.svg" alt="preplaced" />
+          <form className="form" onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="input1">Email*</label>
+              <input type="text" className="form-control" id="input1" placeholder="Enter Email" name="email" value={formData.email} onChange={handleChange} />
             </div>
-          </div>
+            <div className="form-group">
+              <label htmlFor="input2">Password</label>
+              <input type="password" className="form-control" id="input2" placeholder="Enter Password" name="password" value={formData.password} onChange={handleChange} />
+            </div>
+            <button type="submit" className="btn-1">Log In</button>
+            <div className="or">
+              <hr />
+              <span>or</span>
+              <hr />
+            </div>
+            <Link to="/mentor-registration" className="btn-2">Sign up</Link>
+          </form>
         </div>
-      </main>
-    </>
+      )}
+    </main>
   );
 };
 
